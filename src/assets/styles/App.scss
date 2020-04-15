@@ -1,0 +1,117 @@
+@import './Reset.scss';
+@import './Variable.scss';
+
+.App {
+    font-family: 'roboto';
+    text-align: center;
+
+    .Paper {
+        width: 90vw;
+        padding: 2vw;
+        margin: 2vw;
+    }
+
+    .App-PopoverList {
+        text-align: left;
+    }
+
+    // Page List //
+
+    .App-List {
+        .listItemtext {
+            color: $bleuText;
+        }
+
+        .titreListeUser {
+            margin: 3vw;
+            color: $bleuTitre;
+        }
+
+        .Paper {
+            width: 90vw;
+            max-height: 100px;
+            padding: 2vw;
+            margin: 20px;
+
+            display: flex;
+            align-items: center; 
+
+            .Link_Info {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                align-items: center;
+                justify-content: space-between;
+                min-width: 75vw;
+
+                .AccountBoxIcon {
+                    margin-left: 1vw;
+                }
+
+                .paragrapheListe {
+                    padding-left: 2vw;
+                }
+            }
+        }
+    }
+
+    // Page Modif //
+
+    .App-Modif {
+        .containerInput {
+            margin-left: 20vw;
+            margin-right: 20vw;
+
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            width: 60vw;
+            max-width: 460px;
+            min-width: 210px;
+
+            .textField {
+                margin-top: 2vw;
+                margin-bottom: 2vw;
+            }
+        }
+
+        .titreModif {
+            color: $bleuTitre;
+        }
+
+        #buttonModifUser {
+            margin-left: 35vw;
+            margin-right: 35vw;
+        }
+    }
+
+    // Page Info //
+
+    .App-Info {
+        .App-Section-Info {
+            width: max-content;
+            text-align: left;
+            margin: auto;
+
+            .titreInfo {
+                display: flex;
+                justify-content: space-around;
+                color: $bleuTitre;
+            }
+        }
+
+        #InfoTransaction {
+            text-align: center;
+            color: $bleuText;
+        }
+
+        .InfoModifiable {
+            font-weight: bolder;
+            color: $bleuText;
+        }
+
+        #InfoTransaction {
+            margin-top: 5vw;
+        }
+    }
+}
