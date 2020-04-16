@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+// React Route //
+import { Link } from "react-router-dom";
+
 // Import Material UI //
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
@@ -8,6 +11,11 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+
+// Import Material UI Icons //
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 
 // Components //
 import PopoverList from "../popover/list_popover";
@@ -23,17 +31,18 @@ export default class Info extends Component {
         super(props);
 
         this.state = {
-            user : false,
-            posts : false,
-            isUserLoading : false,
-            isPostsLoading : false,
-            isError : false,
-            errorData : false 
+            user: false,
+            posts: false,
+            isUserLoading: false,
+            isPostsLoading: false,
+            isAddPostLoading: false,
+            isError: false,
+            errorData: false
         };
     }
 
     render() {
-        const { user, posts, isPostsLoading, isUserLoading, isError, errorData } = this.state;
+        const { user, posts, isPostsLoading, isUserLoading, isError, errorData, isAddPostLoading } = this.state;
 
         return (
             <Grid
@@ -66,20 +75,45 @@ export default class Info extends Component {
                             <p><span className="InfoModifiable">tel : </span> {user[0].phone}</p>
                             <ChangeStatus id={user[0].id} />
 
-                            {posts 
-                                ? <List >
-                                    {posts.map(({ id, title }) => (
-                                            <ListItem 
+                            <h2>Mes messages</h2>
+                            {posts
+                                ? <section>
+                                    <List >
+                                        {posts.map(({ id, title }) => (
+                                            <ListItem
                                                 button
                                                 key={id}
                                                 onClick={() => { this.props.getPost(id) }}
                                             >
-                                                <ListItemText className="listItemtext">
-                                                    <p className="paragrapheListe">{title}</p>
-                                                </ListItemText>
+                                                <ListItemIcon>
+                                                    <DeleteForeverIcon color="secondary" fontSize="large" onClick={() => { this._deletePost(id, title) }} />
+                                                </ListItemIcon>
+
+                                                <Link to="/post">
+                                                    <ListItemText className="listItemtext">
+                                                        <p className="paragrapheListe">{title}</p>
+                                                    </ListItemText>
+                                                </Link>
                                             </ListItem>
-                                    ))}
-                                </List>
+                                        ))}
+                                    </List>
+
+                                    <h2>Ajouter un message</h2>
+                                    {!isAddPostLoading
+                                        ? <form id="formAddPost">
+                                            <TextField className="textField" label="Titre" variant="outlined" name="titre" />
+                                            <TextField className="textField" label="Message" variant="outlined" name="message" />
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                onClick={() => { this._addPost() }}
+                                            >
+                                                Poster
+                                            </Button>
+                                        </form>
+                                        : <Loader />
+                                    }
+                                </section>
 
                                 : !isError && !isPostsLoading ? <p>Pas de posts</p> : null
                             }
@@ -89,8 +123,9 @@ export default class Info extends Component {
                         : !isError && !isUserLoading ? <p>Pas de personne sélectionnée</p> : null
                     }
 
-                    { isUserLoading || isPostsLoading ? <Loader /> : null }
-                    { isError && <p>Erreur de chargement -> Données non accessibles : {errorData}</p> }
+                    {isUserLoading || isPostsLoading ? <Loader /> : null}
+                    {isError && <p>Erreur de chargement -> Données non accessibles : {errorData}</p>}
+
                 </Paper>
             </Grid>
         );
@@ -98,7 +133,7 @@ export default class Info extends Component {
 
     componentDidMount() {
         this.setState({ isUserLoading: true });
-    
+
         fetch('https://jsonplaceholder.typicode.com/users?id=' + this.props.userId)
         .then(response => response.json())
         .then(json => {
@@ -106,7 +141,7 @@ export default class Info extends Component {
                 user: json,
                 isUserLoading: false
             });
-            this._getPost();
+            this._getPosts();
         })
         .catch((err) => {
             console.log('Problème avec l\'opération fetch de user : ' + err.message);
@@ -114,16 +149,7 @@ export default class Info extends Component {
         });
     }
 
-    _displayError(err) {
-        this.setState({ 
-            isError : true,
-            isUserLoading : false,
-            isPostsLoading : false,
-            errorData : err
-        });
-    }
-
-    _getPost() {
+    _getPosts() {
         this.setState({ isPostsLoading: true });
 
         fetch('https://jsonplaceholder.typicode.com/posts?userId=' + this.props.userId)
@@ -133,8 +159,58 @@ export default class Info extends Component {
             isPostsLoading: false
         }))
         .catch((err) => {
-            console.log('Problème avec l\'opération fetch de posts : ' + err.message);
+            console.log('Problème avec l\'opération fetch des posts : ' + err.message);
             this._displayError('messages');
+        });
+    }
+
+    _displayError(err) {
+        this.setState({
+            isError: true,
+            isUserLoading: false,
+            isPostsLoading: false,
+            errorData: err
+        });
+    }
+
+    _deletePost(id, title) {
+        fetch('https://jsonplaceholder.typicode.com/posts/' + id, {
+            method: 'DELETE'
+        })
+        .catch((err) => {
+            console.log('Problème avec l\'opération fetch delete du post : ' + err.message);
+        });
+
+        let newPosts = this.state.posts.filter(p => p.title !== title);
+        this.setState({ posts: newPosts });
+    }
+
+    _addPost() {
+        let form = document.querySelector("#formAddPost");
+        this.setState({ isAddPostLoading : true });
+
+        fetch('https://jsonplaceholder.typicode.com/posts', {
+            method: 'POST',
+            body: JSON.stringify({
+                title :  form.titre.value,
+                body :   form.message.value,
+                userId : this.props.userId
+            }),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        })
+        .then(response => response.json())
+        .then(json => {
+            let newPosts = this.state.posts;
+            newPosts.push(json);
+            this.setState({ 
+                posts : newPosts,
+                isAddPostLoading : false
+            });
+        })
+        .catch((err) => {
+            console.log('Problème avec l\'opération fetch pour ajouter un post : ' + err.message);
         });
     }
 }

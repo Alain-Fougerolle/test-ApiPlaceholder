@@ -118,9 +118,6 @@ export default class Modif extends Component {
             email:      formAdhesion.email.value,
             tel:        formAdhesion.tel.value
         }
-
-        this.props.socket.emit("modifUser", objetModif);
-        this.props.miseAJourUsers(objetModif);
     }
 }
 

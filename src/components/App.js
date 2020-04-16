@@ -21,7 +21,6 @@ export default class App extends Component {
 
         this.getUser = this.getUser.bind(this);
         this.getPost = this.getPost.bind(this);
-        this.miseAJourUsers = this.miseAJourUsers.bind(this);
     }
 
     getPost(id) {
@@ -30,18 +29,6 @@ export default class App extends Component {
 
     getUser(id) {
         this.setState({ userId: id });
-    }
-
-    miseAJourUsers(objetModif) {
-        const { users } = this.state;
-
-        let newUsers = users;
-        newUsers[objetModif.id - 1] = objetModif; // -1 parque mySql commence a 1 
-
-        this.setState({
-            userId: objetModif,
-            users: newUsers
-        });
     }
 
     render() {       
@@ -62,14 +49,17 @@ export default class App extends Component {
 
                         <Route path="/info">
                             {userId
-                                ? <Info userId = {userId} getPost = {this.getPost} />
+                                ? <Info 
+                                    userId = {userId} 
+                                    getPost = {this.getPost} 
+                                />
                                 : <Redirect to = "/liste" />
                             }
                         </Route>
 
                         <Route path="/modif">
                             {userId
-                                ? <Modif userId = {userId} miseAJourUsers={this.miseAJourUsers} />
+                                ? <Modif userId = {userId} />
                                 : <Redirect to = "/liste" />
                             }
                         </Route>

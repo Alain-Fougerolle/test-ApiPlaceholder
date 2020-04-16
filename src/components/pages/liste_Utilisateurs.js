@@ -93,17 +93,17 @@ export default class Liste extends Component {
             users : json
         }))
         .catch(function(error) {
-            console.log('Il y a eu un problème avec l\'opération fetch: ' + error.message);
+            console.log('Il y a eu un problème avec l\'opération fetch des users : ' + error.message);
         });
     }
 }
 
-Liste.propTypes = {
-    recupUser: PropTypes.func,
+// Liste.propTypes = {
+//     recupUser: PropTypes.func,
 
-    users: PropTypes.oneOfType([
-        PropTypes.array,
-        PropTypes.bool,
-        PropTypes.arrayOf(PropTypes.object)
-    ]),
-};
+//     users: PropTypes.oneOfType([
+//         PropTypes.array,
+//         PropTypes.bool,
+//         PropTypes.arrayOf(PropTypes.object)
+//     ]),
+// };
