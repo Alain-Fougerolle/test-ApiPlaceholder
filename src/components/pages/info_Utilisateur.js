@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
 // React Route //
 import { Link } from "react-router-dom";
@@ -68,14 +67,14 @@ export default class Info extends Component {
 
                             <div className="titreInfo">
                                 <StatusUtilisateur id={user[0].id} />
-                                <h2>{user[0].name} {user[0].username}</h2>
+                                <h2 className="title">{user[0].name} {user[0].username}</h2>
                             </div>
                             <p><span className="InfoModifiable">Adresse : </span> {user[0].address.street} {user[0].address.suite} {user[0].address.city}</p>
                             <p><span className="InfoModifiable">email : </span> {user[0].email} </p>
                             <p><span className="InfoModifiable">tel : </span> {user[0].phone}</p>
-                            <ChangeStatus id={user[0].id} />
+                            <h3>Change status : <ChangeStatus id={user[0].id} /></h3>
 
-                            <h2>Mes messages</h2>
+                            <h2 className="title">Mes messages</h2>
                             {posts
                                 ? <section>
                                     <List >
@@ -83,22 +82,23 @@ export default class Info extends Component {
                                             <ListItem
                                                 button
                                                 key={id}
+                                                className= "ListItemInfo"
                                                 onClick={() => { this.props.getPost(id) }}
                                             >
-                                                <ListItemIcon>
-                                                    <DeleteForeverIcon color="secondary" fontSize="large" onClick={() => { this._deletePost(id, title) }} />
-                                                </ListItemIcon>
-
                                                 <Link to="/post">
                                                     <ListItemText className="listItemtext">
                                                         <p className="paragrapheListe">{title}</p>
                                                     </ListItemText>
                                                 </Link>
+
+                                                <ListItemIcon>
+                                                    <DeleteForeverIcon color="secondary" fontSize="large" onClick={() => { this._deletePost(id, title) }} />
+                                                </ListItemIcon>
                                             </ListItem>
                                         ))}
                                     </List>
 
-                                    <h2>Ajouter un message</h2>
+                                    <h2 className="title">Ajouter un message</h2>
                                     {!isAddPostLoading
                                         ? <form id="formAddPost">
                                             <TextField className="textField" label="Titre" variant="outlined" name="titre" />

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
 // React Route //
 import { Link } from "react-router-dom";
@@ -12,11 +11,23 @@ import TextField from '@material-ui/core/TextField';
 
 // Components //
 import PopoverList from "../popover/list_popover";
-
+import Loader from "../loader/loader";
 
 export default class Modif extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            user: false,
+            isUserLoading: false,
+            isError: false,
+            errorData: false
+        };
+    }
 
     render() {
+        const { user, isUserLoading, isError, errorData } = this.state;
+
         return (
             <Grid
                 className="App-Modif"
@@ -33,7 +44,7 @@ export default class Modif extends Component {
                         justify="space-between"
                     >
                         <PopoverList />
-                        {this.props.user
+                        {this.props.userId
                             ? <Link to="/info">
                                 <Button
                                     id="buttonAnnulerUser"
@@ -44,11 +55,11 @@ export default class Modif extends Component {
                                 </Button>
                             </Link>
 
-                            : <div></div>
+                            : null
                         }
                     </Grid>
                     
-                    {this.props.user
+                    {user
                         ? <form id="formModifUser">
                             <h2 className="titreModif">Modification des informations</h2>
                             <Grid
@@ -59,8 +70,8 @@ export default class Modif extends Component {
                                 alignItems="center"
                             >
                                 <div className="containerInput">
-                                    <TextField className="textField" label="Prenom" variant="outlined" name="prenom" defaultValue={this.props.user.name} />
-                                    <TextField className="textField" label="Nom" variant="outlined" name="nom" defaultValue={this.props.user.username} />
+                                    <TextField className="textField" label="Prenom" variant="outlined" name="prenom" defaultValue={user[0].name} />
+                                    <TextField className="textField" label="Nom" variant="outlined" name="nom" defaultValue={user[0].username} />
                                 </div>
 
                                 <div className="containerInput">
@@ -70,18 +81,18 @@ export default class Modif extends Component {
                                         variant="outlined"
                                         name="rue"
                                         fullWidth
-                                        defaultValue={this.props.user.address.street}
+                                        defaultValue={user[0].address.street}
                                     />
                                 </div>
 
                                 <div className="containerInput">
-                                    <TextField className="textField" label="Code Postal" variant="outlined" name="codePostal" defaultValue={this.props.user.address.suite} />
-                                    <TextField className="textField" label="Ville" variant="outlined" name="ville" defaultValue={this.props.user.address.city} />
+                                    <TextField className="textField" label="Code Postal" variant="outlined" name="codePostal" defaultValue={user[0].address.suite} />
+                                    <TextField className="textField" label="Ville" variant="outlined" name="ville" defaultValue={user[0].address.city} />
                                 </div>
 
                                 <div className="containerInput">
-                                    <TextField className="textField" label="Email" variant="outlined" name="email" defaultValue={this.props.user.email} />
-                                    <TextField className="textField" label="Téléphone" variant="outlined" name="tel" defaultValue={this.props.user.phone} />
+                                    <TextField className="textField" label="Email" variant="outlined" name="email" defaultValue={user[0].email} />
+                                    <TextField className="textField" label="Téléphone" variant="outlined" name="tel" defaultValue={user[0].phone} />
                                 </div>
 
                                 <Link to="/info">
@@ -89,7 +100,7 @@ export default class Modif extends Component {
                                         id="buttonModifUser"
                                         variant="contained"
                                         color="primary"
-                                        onClick={() => { this.enregistrerModif() }}
+                                        onClick={() => { this._updateUser() }}
                                     >
                                         Enregistrer
                                     </Button>
@@ -97,54 +108,68 @@ export default class Modif extends Component {
                             </Grid>
                         </form>
 
-                        : <p>Aucune Personne Sélectionnée</p>
+                        : !isError && !isUserLoading ? <p>Pas de personne sélectionnée</p> : null
                     }
+
+                    {isUserLoading && <Loader />}
+                    {isError && <p>Erreur de chargement -> Données non accessibles : {errorData}</p>}
 
                 </Paper>
             </Grid>
         );
     }
 
-    enregistrerModif() {
-        let formAdhesion = document.querySelector('#formModifUser');
+    componentDidMount() {
+        this.setState({ isUserLoading: true });
 
-        let objetModif = {
-            id: this.props.user.id,
-            prenom:     formAdhesion.prenom.value,
-            nom:        formAdhesion.nom.value,
-            rue:        formAdhesion.rue.value,
-            codePostal: formAdhesion.codePostal.value,
-            ville:      formAdhesion.ville.value,
-            email:      formAdhesion.email.value,
-            tel:        formAdhesion.tel.value
-        }
+        fetch('https://jsonplaceholder.typicode.com/users?id=' + this.props.userId)
+        .then(response => response.json())
+        .then(json => {
+            this.setState({
+                user: json,
+                isUserLoading: false
+            });
+        })
+        .catch((err) => {
+            console.log('Problème avec l\'opération fetch de user : ' + err.message);
+            this._displayError('utilisateur');
+        });
+    }
+
+    _updateUser() {
+        let form = document.querySelector('#formModifUser');
+
+        fetch('https://jsonplaceholder.typicode.com/users/' + this.props.userId, {
+            method: 'PUT',
+            body: JSON.stringify({
+                id :            this.props.userId,
+                name :          form.prenom.value,
+                username :      form.nom.value,
+                email :         form.email.value,
+                address : {
+                    street :    form.rue.value,
+                    suite :     form.codePostal.value,
+                    city :      form.ville.value
+                },
+                phone :         form.tel.value
+            }),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        })
+        .then(response => response.json())
+        .then(json => console.log(json))
+        .catch((err) => {
+            console.log('Problème avec l\'opération fetch de user : ' + err.message);
+            this._displayError('mise a jour utilisateur');
+        });
+    }
+
+    _displayError(err) {
+        this.setState({
+            isError: true,
+            isUserLoading: false,
+            errorData: err
+        });
     }
 }
-
-// Modif.propTypes = {
-//     miseAJourUsers: PropTypes.func,
-
-//     user: PropTypes.oneOfType([
-//         PropTypes.object,
-//         PropTypes.bool,
-
-//         PropTypes.shape({
-
-//             nom: PropTypes.string,
-//             prenom: PropTypes.string,
-//             rue: PropTypes.oneOfType([
-//                 PropTypes.number,
-//                 PropTypes.string
-//             ]),
-
-//             codePostal: PropTypes.number,
-//             ville: PropTypes.string,
-//             email: PropTypes.oneOfType([
-//                 PropTypes.number,
-//                 PropTypes.string
-//             ]),
-
-//             tel: PropTypes.number
-//         }),
-//     ]),
-// };

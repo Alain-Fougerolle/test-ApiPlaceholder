@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
 // React Route //
 import { Link } from "react-router-dom";
@@ -97,13 +96,3 @@ export default class Liste extends Component {
         });
     }
 }
-
-// Liste.propTypes = {
-//     recupUser: PropTypes.func,
-
-//     users: PropTypes.oneOfType([
-//         PropTypes.array,
-//         PropTypes.bool,
-//         PropTypes.arrayOf(PropTypes.object)
-//     ]),
-// };

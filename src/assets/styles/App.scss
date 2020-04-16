@@ -95,23 +95,73 @@
 
             .titreInfo {
                 display: flex;
-                justify-content: space-around;
+
+                .title {
+                    margin-left: 2vw;
+                    margin-bottom: 0vw;
+                    margin-top: 0vw;
+                }
+            }
+
+            .ListItemInfo {
+                display: flex;
+                flex-wrap: nowrap;
+                align-items: center;
+                justify-content: space-between;
+                min-width: 60vw;
+            }
+
+            .title {
+                text-align: center;
+                margin: 2vw;
                 color: $bleuTitre;
             }
-        }
+            
+            .InfoModifiable {
+                font-weight: bolder;
+                color: $bleuText;
+            }
 
-        #InfoTransaction {
-            text-align: center;
-            color: $bleuText;
-        }
+            #formAddPost {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
 
-        .InfoModifiable {
+                .textField {
+                    width: 40vw;
+                    margin-bottom: 1vw;
+                }
+            }
+        }
+    }
+
+    // Page Comment // 
+
+    .App-Section-Comments {
+        .info {
             font-weight: bolder;
             color: $bleuText;
         }
 
-        #InfoTransaction {
-            margin-top: 5vw;
+        .title {
+            margin: 2vw;
+            color: $bleuTitre;
+        }
+
+        .post {
+            margin-bottom: 2vw;
+        }
+
+        #formAddComment {
+            .textField {
+                width: 30vw;
+                margin: 1vw;
+            }
+
+            .commentaire {
+                width: 62vw;
+            }
         }
     }
 }
