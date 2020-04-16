@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
 // Import Material UI Icons //
-import ReplyIcon from '@material-ui/icons/Reply';
+import HomeIcon from '@material-ui/icons/Home';
 
 const useStyles = makeStyles(theme => ({
     popover: {
@@ -38,7 +38,7 @@ export default function PopoverList() {
         <div className="App-PopoverList">
     
             <Link to="/liste">
-                <ReplyIcon 
+                <HomeIcon 
                     color="primary" 
                     fontSize="large"
                     onMouseEnter={handlePopoverOpen}
