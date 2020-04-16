@@ -76,7 +76,7 @@ export default class Info extends Component {
 
                             <h2 className="title">Mes messages</h2>
                             {posts
-                                ? <section>
+                                ? <section className="section-Info">
                                     <List >
                                         {posts.map(({ id, title }) => (
                                             <ListItem
@@ -211,6 +211,8 @@ export default class Info extends Component {
         })
         .catch((err) => {
             console.log('Problème avec l\'opération fetch pour ajouter un post : ' + err.message);
+            this.setState({ isAddPostLoading : false });
+            alert("L'envoie du message a échoué");
         });
     }
 }

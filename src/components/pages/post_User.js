@@ -84,7 +84,7 @@ export default class Post extends Component {
                                                 </ListItemText>
 
                                                 <ListItemIcon>
-                                                    <DeleteForeverIcon color="secondary" fontSize="large" onClick={() => { this._deleteComment(id) }} />
+                                                    <DeleteForeverIcon color="secondary" fontSize="large" onClick={() => { this._deleteComment(id, body) }} />
                                                 </ListItemIcon>
 
                                             </ListItem>
@@ -92,6 +92,7 @@ export default class Post extends Component {
                                     </List>
 
                                     <h2 className="title">Ajouter un commentaire</h2>
+
                                     {!isAddCommentLoading
                                         ? <form id="formAddComment">
                                             <TextField className="textField" label="Nom" variant="outlined" name="nom" />
@@ -168,7 +169,7 @@ export default class Post extends Component {
         });
     }
 
-    _deleteComment(id) {
+    _deleteComment(id, body) {
         fetch('https://jsonplaceholder.typicode.com/comments/' + id, {
             method: 'DELETE'
         })
@@ -176,7 +177,7 @@ export default class Post extends Component {
             console.log('Problème avec l\'opération fetch delete du commentaire : ' + err.message);
         });
 
-        let newComments = this.state.comments.filter(p => p.id !== id);
+        let newComments = this.state.comments.filter(p => p.body !== body);
         this.setState({ comments : newComments });
     }
 
@@ -207,6 +208,8 @@ export default class Post extends Component {
         })
         .catch((err) => {
             console.log('Problème avec l\'opération fetch pour ajouter un commentaire : ' + err.message);
+            this.setState({ isAddCommentLoading : false });
+            alert("L'envoie du commentaire a échoué");
         });
     }
 }
