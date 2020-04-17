@@ -85,11 +85,17 @@ export default class Info extends Component {
                                                 className= "ListItemInfo"
                                                 onClick={() => { this.props.getPost(id) }}
                                             >
-                                                <Link to="/post">
-                                                    <ListItemText className="listItemtext">
+                                                {id !== 101
+                                                    ? <Link to="/post">
+                                                        <ListItemText className="listItemtext">
+                                                            <p className="paragrapheListe">{title}</p>
+                                                        </ListItemText>
+                                                    </Link>
+
+                                                    : <ListItemText className="listItemtext" onClick={() => { alert("Arrêter de cliquer dessus, ce post n'existe pas pour de vrai !") }}>
                                                         <p className="paragrapheListe">{title}</p>
                                                     </ListItemText>
-                                                </Link>
+                                                }
 
                                                 <ListItemIcon>
                                                     <DeleteForeverIcon color="secondary" fontSize="large" onClick={() => { this._deletePost(id, title) }} />
